@@ -10,23 +10,6 @@ An end-to-end Deep Learning and Computer Vision pipeline designed for automated 
 
 Powered by **YOLO11 Nano Segmentation (`yolo11n-seg`)**, this system enables real-time structural health monitoring (SHM), automated Quality Control (QC) during building inspections, and precise defect quantification.
 
----
-
-## 📌 Table of Contents
-- [Executive Overview](#-executive-overview)
-- [Key Features](#-key-features)
-- [System Architecture & Workflow](#-system-architecture--workflow)
-- [Tech Stack](#-tech-stack)
-- [Dataset Specifications](#-dataset-specifications)
-- [Training & Hyperparameter Configuration](#-training--hyperparameter-configuration)
-- [Model Evaluation & Performance](#-model-evaluation--performance)
-- [Repository Structure](#-repository-structure)
-- [Installation & Setup](#-installation--setup)
-- [Usage Guide](#-usage-guide)
-- [Model Export & Deployment](#-model-export--deployment)
-- [License & Citation](#-license--citation)
-
----
 
 ## 🎯 Executive Overview
 
