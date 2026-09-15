@@ -50,3 +50,86 @@ This project addresses this challenge by deploying state-of-the-art **Instance S
 ---
 
 ## ⚙️ System Architecture & Workflow
+
+
+┌─────────────────────────┐
+│ Raw Concrete Images     │
+└────────────┬────────────┘
+│
+▼
+┌─────────────────────────┐
+│ Dataset Preprocessing   │ ◄── Dynamic YAML Configuration Parsing
+└────────────┬────────────┘
+│
+▼
+┌─────────────────────────┐
+│ YOLO11n-Seg Model       │ ◄── Transfer Learning (Pre-trained Weights)
+│ High-Res Training       │     (1024x1024, SGD Optimizer, Patience=12)
+└────────────┬────────────┘
+│
+▼
+┌─────────────────────────┐
+│ Dual-Task Validation    │ ──► Bounding Box Detection Metrics (mAP@50, mAP@50-95)
+│                         │ ──► Polygon Mask Segmentation Metrics (mAP@50, mAP@50-95)
+└────────────┬────────────┘
+│
+▼
+┌─────────────────────────┐
+│ Checkpoint & Artifacts  │ ──► Export 'latest_best_model.pt'
+│ Packaging               │ ──► Compress 'latest_yolo_results.zip'
+└─────────────────────────┘
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology / Library |
+| :--- | :--- |
+| **Language** | Python 3.10+ |
+| **Deep Learning Framework** | [PyTorch](https://pytorch.org/) |
+| **Vision Model Framework** | [Ultralytics YOLO11](https://docs.ultralytics.com/) |
+| **Image & Matrix Processing** | OpenCV, NumPy, Pillow |
+| **Data Manipulation** | Pandas, PyYAML |
+| **Hardware Acceleration** | NVIDIA CUDA GPU Acceleration |
+
+---
+
+## 📊 Dataset Specifications
+
+The model is trained on the industrial **Crack Segmentation Dataset**:
+- **Task Type**: Instance Segmentation (Polygon Mask Coordinates).
+- **Target Class**: `Crack_Defect` / Concrete Surface Defect.
+- **Format**: Ultralytics YOLO Segmentation Format with automated `.yaml` dataset configuration discovery.
+- **Validation**: Separate evaluation set for dynamic performance auditing after epoch completion.
+
+---
+
+## 🚀 Training & Hyperparameter Configuration
+
+The model was fine-tuned using transfer learning on pre-trained `yolo11n-seg.pt` weights with hyperparameter configurations tailored for high-resolution defect detection:
+
+```python
+train_results = model.train(
+    data=DATASET_YAML,       # Path to crack segmentation YAML config
+    epochs=250,              # Total maximum epochs
+    imgsz=1024,              # High image resolution for fine crack feature extraction
+    batch=16,                # Batch size
+    optimizer="SGD",         # Stochastic Gradient Descent
+    patience=12,             # Early stopping threshold
+    device=0,                # CUDA GPU device ID
+    project="industrial_qc", # Project output directory
+    name="crack_yolo_seg",   # Run experiment identifier
+    save=True,               # Save model checkpoints
+    verbose=True             # Output detailed logs
+)
+
+## 🌐 Interactive Web Application (Streamlit)
+
+Launch the interactive Web GUI to upload concrete images and perform real-time crack segmentation:
+
+```bash
+# Install app dependencies
+pip install -r requirements.txt
+
+# Run the Streamlit app
+streamlit run app.py
