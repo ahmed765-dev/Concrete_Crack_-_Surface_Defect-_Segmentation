@@ -52,26 +52,45 @@ This project addresses this challenge by deploying state-of-the-art **Instance S
 ## ⚙️ System Architecture & Workflow
 
 
-## ⚙️ System Architecture & Workflow
-
-```mermaid
-flowchart TD
-    A[📸 Raw Concrete Images] --> B[⚙️ Dataset Preprocessing]
-    YAML[📄 Dynamic YAML Config Parsing] --> B
-    
-    B --> C[🚀 YOLO11n-Seg Model Training<br/>1024x1024 | SGD Optimizer | Patience=12]
-    TL[💡 Transfer Learning<br/>Pre-trained Weights] --> C
-    
-    C --> D[📊 Dual-Task Validation]
-    
-    D --> D1[📦 Box Detection Metrics<br/>mAP@50 | mAP@50-95]
-    D --> D2[🎭 Mask Segmentation Metrics<br/>mAP@50 | mAP@50-95]
-    
-    D1 --> E[📦 Checkpoint & Artifacts Packaging]
-    D2 --> E
-    
-    E --> F1[💾 Export 'latest_best_model.pt']
-    E --> F2[🗂️ Compress 'latest_yolo_results.zip']
+                     ┌───────────────────────┐
+                     │  Raw Concrete Images  │
+                     └───────────┬───────────┘
+                                 │
+                                 ▼
+                     ┌───────────────────────┐
+                     │ Dataset Preprocessing │ ◄── Dynamic YAML Config
+                     └───────────┬───────────┘
+                                 │
+                                 ▼
+                     ┌───────────────────────┐
+                     │  YOLO11n-Seg Model    │ ◄── Transfer Learning
+                     │  (1024x1024 Training) │
+                     └───────────┬───────────┘
+                                 │
+                                 ▼
+                     ┌───────────────────────┐
+                     │ Dual-Task Validation  │
+                     └───────────┬───────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  ▼                             ▼
+       ┌────────────────────┐        ┌────────────────────┐
+       │ Box Detect Metrics │        │  Mask Seg Metrics  │
+       │ (mAP50, mAP50-95)  │        │ (mAP50, mAP50-95)  │
+       └──────────┬─────────┘        └──────────┬─────────┘
+                  │                             │
+                  └──────────────┬──────────────┘
+                                 │
+                                 ▼
+                     ┌───────────────────────┐
+                     │  Packaging & Export   │
+                     └───────────┬───────────┘
+                                 │
+                  ┌──────────────┴──────────────┐
+                  ▼                             ▼
+       ┌────────────────────┐        ┌────────────────────┐
+       │latest_best_model.pt│        │latest_yolo_results │
+       └────────────────────┘        └────────────────────┘
 
 ---
 
